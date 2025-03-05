@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood Playlist</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cinzel:wght@400;700&family=Montserrat:wght@300;700&family=Poppins:wght@400;700&family=Lobster&family=Oswald:wght@400;700&family=Lora:wght@400;700&display=swap" rel="stylesheet" />
+    <style>
+        body {
+            background-color: #252629;
+            color: white;
+            text-align: center;
+            transition: background-color 0.5s ease-in-out;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-top: 50px;
+            font-family: 'Playfair Display', serif; 
+        }
+
+        .title {
+            font-size: clamp(3rem, 10vw, 7rem);
+            font-family: "Quintessential", serif; 
+            font-weight: bold;
+            letter-spacing: 10px;
+            text-transform: uppercase;
+            display: block;
+        }
+
+        .navbar {
+        display: flex;
+        justify-content: space-between;
+        padding: 20px;
+        background-color: rgba(0, 0, 0, 0.2);
+        margin-top: 30px;
+        align-items: center;
+        border-radius: 20px;
+        border: 2px black;
+        }
+        
+        .navbar h2 {
+        font-size: 40px;
+        font-weight: bold;
+        text-transform: uppercase;
+        }
+        
+        .navbar a {
+        color: white;
+        text-decoration: none;
+        font-size: 18px;
+        margin: 0 15px;
+        font-family: 'Montserrat', sans-serif;
+        padding: 10px 20px;
+        border-radius: 30px;
+        background-color: rgba(255, 255, 255, 0.2);
+        text-transform: uppercase;
+        }
+
+        h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 30px;
+        }
+
+        .mood-buttons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        .mood-buttons button {
+            border: none;
+            padding: 20px;
+            cursor: pointer;
+            width: 220px;
+            text-align: center;
+            font-size: 30px;
+            border-radius: 30px;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+
+        .happy {
+            background-color: #efdb2b;
+            color: black;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .sad {
+            background-color: #1a36cc;
+            color: white;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .chill {
+            background-color: #0ed34b;
+            color: black;
+            font-family: 'Oswald', sans-serif;
+        }
+
+        .anger {
+            background-color: #f30f0f;
+            color: white;
+            font-family: 'Cinzel', serif;
+        }
+
+        .recent-song {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            display: inline-block;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <div>
+            <a href="#">RECENT PLAYLISTS</a>
+            <a href="#">SONG RECOMMENDATIONS</a>
+        </div>
+        <h2>MOOD PLAYLIST</h2>
+        <div>
+            <a href="#">CUSTOMIZE</a>
+            <a href="#">PRESETS</a>
+            <a href="#">LOGIN/SIGNUP</a>
+        </div>
+    </div>
+
+    <h1>What’s your mood today?</h1>
+
+    <div class="mood-buttons">
+        <button type="button" class="happy" onclick="changeMood('happy')">HAPPY</button>
+        <button type="button" class="sad" onclick="changeMood('sad')">SAD</button>
+        <button type="button" class="chill" onclick="changeMood('chill')">CHILL</button>
+        <button type="button" class="anger" onclick="changeMood('anger')">ANGER</button>
+    </div>
+
+
+    <script>
+        function changeMood(mood) {
+            let colors = {
+                happy: "yellow",
+                sad: "blue",
+                chill: "green",
+                anger: "red"
+            };
+            document.body.style.backgroundColor = colors[mood];
+        }
+    </script>
+
+</body>
+</html>
