@@ -1,6 +1,6 @@
 import os
 import requests
-from flask import Flask, request, redirect, session, url_for
+from flask import Flask, request, redirect, session, url_for, render_template
 
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
@@ -17,6 +17,7 @@ def home():
     return '''
     Welcome to the Spotify Auth App!
     <a href="/login">Login with Spotify</a>
+    <a href="/about">About Us</a>
     <form action="/search_songs" method="get">
         <label for="mood">Select a Mood:</label>
         <select name="mood" id="mood">
@@ -63,6 +64,10 @@ def callback():
     session["token"] = token_info["access_token"]
     return redirect(url_for("profile"))
 
+@app.route('/about')
+def about():
+    return render_template("about.html", title="About")
+
 @app.route('/profile')
 def profile():
     if "token" not in session:
@@ -76,9 +81,10 @@ def profile():
     <p>Email: {user_info.get('email', 'No email')}</p>
     <p>Country: {user_info.get('country', 'Unknown')}</p>
     <p>Followers: {user_info.get('followers', {}).get('total', 0)}</p>
-    <img src="{user_info.get('images', [{}])[0].get('url', '')}" width="200px">
     <a href="/">Go Back</a>
     """
+
+# Removed <img src="{user_info.get('images', [{}])[0].get('url', '')}" width="200px">
 
 @app.route('/search_songs', methods=['GET'])
 def search_songs_form():
