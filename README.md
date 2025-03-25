@@ -4,7 +4,7 @@
 
 This app would allow users to search for a song based on their mood as the title suggests. For example, say you wanted to find a song that is sad. With our app, you'll be able to adjust the mood settings to your liking and the playlist will generate a list of songs based on said mood.
 
-The problem with apps that are generally used for listening nowadays do not have an option to search for a song based on the mood, which can result in a song that is not consistent with a user's mood. That alone can cause stress and can affect the productivity and emotional stability of the user itself.
+The problem with apps that are generally used for listening nowadays, such as *Spotify* and *Last.fm* do not have an option to search for a song based on the mood, which can result in a song that is not consistent with a user's mood. That alone can cause stress and can affect the productivity and emotional stability of the user itself.
 
 This app is meant for users who want a playlist generator that can match their mood and don't want to browse a list of songs for hours looking for the right one that would suit them best.
 
