@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood Playlist</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kalnia:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <a href="index.html" class="logo">
+                <img src="mood.png" alt="Logo">
+            </a>
+        </div>
+        <nav>
+            <div class="nav-links">
+                <a href="#">Recent Playlists</a>
+                <a href="#">Customize</a>
+                <a href="#">Presets</a>
+            </div>
+        </nav>
+        <div class="auth">
+            <a href="{{ url_for('login') }}">Login / Signup</a>
+        </div>
+    </header>
+
+    <h1>WHAT'S YOUR MOOD TODAY?</h1>
+
+    <div class="container1">
+        <div class="left-text">
+            <p>Customize your playlists according to your choice of tempo and genre.</p>
+            <img src="books.png" class="background-image" alt="Background Image">
+        </div>
+
+        <div class="mood-buttons">
+            <button class="mood-btn happy" onclick="fetchSongs('happy')">HAPPY</button>
+            <button class="mood-btn sad" onclick="fetchSongs('sad')">SAD</button>
+            <button class="mood-btn chill" onclick="fetchSongs('chill')">CHILL</button>
+            <button class="mood-btn anger" onclick="fetchSongs('angry')">ANGER</button>
+        </div>
+
+        <div class="right-text">
+            <p>Create a playlist that matches your mood in just one click.</p>
+            <img src="click.png" class="background-imagec" alt="Background Imagec">
+        </div>
+    </div>
+
+    <div id="results"></div>
+
+    <footer>
+        <a href="#">About Us</a>
+    </footer>
+
+    <script>
+        function fetchSongs(mood) {
+            fetch(`/search_songs?mood=${mood}`)
+                .then(response => response.json())
+                .then(data => {
+                    let resultDiv = document.getElementById("results");
+                    resultDiv.innerHTML = "<h2>" + mood.toUpperCase() + " Songs</h2>";
+
+                    if (data.error) {
+                        resultDiv.innerHTML += `<p>${data.error}</p>`;
+                        return;
+                    }
+
+                    data.forEach(song => {
+                        resultDiv.innerHTML += `
+                            <p>
+                                <strong>${song.name}</strong> by ${song.artist} 
+                                <a href="${song.url}" target="_blank">Listen</a>
+                            </p>
+                        `;
+                    });
+                })
+                .catch(error => console.error("Error fetching songs:", error));
+        }
+    </script>
+
+</body>
+</html>
