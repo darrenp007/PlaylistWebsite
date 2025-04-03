@@ -4,12 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generated Playlist</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+        }
+        .track {
+            background-color: #d3d3d3;
+            margin-bottom: 20px;
+            padding: 10px;
+        }
+        .track img {
+            width: 12%;
+            height: auto;
+        }
+    </style>
 </head>
 <body>
     <h1>Generated Playlist</h1>
     <ul>
         {% for track in tracks %}
-            <li><strong>{{ track.name }}</strong> by {{ track.artist }}</li>
+        <li class="track">
+            <img src="{{ track.image }}" alt="Album cover for {{ track.name }}">
+            <p>{{ track.name }} by {{ track.artist }}</p>
+            <a href="{{ track.spotify_url }}">Listen on Spotify</a>
+            <a href="{{ track.lastfm_url }}">More Info on Last.fm</a>
+        </li>
         {% endfor %}
     </ul>
 </body>
