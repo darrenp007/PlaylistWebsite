@@ -31,6 +31,31 @@ API_KEY = os.getenv('LAST_FM_ID')
 BASE_URL = 'http://ws.audioscrobbler.com/2.0/'
 
 
+def fetch_spotify_album_art(artist_name, track_name, token):
+    """Search Spotify for a track and get the album art and Spotify track URL."""
+    query = f"track:{track_name} artist:{artist_name}"
+    url = f"https://api.spotify.com/v1/search"
+    headers = {
+        'Authorization': f'Bearer {token}',
+        'Content-Type': 'application/json'
+    }
+    params = {
+        'q': query,
+        'type': 'track',
+        'limit': 1
+    }
+    response = requests.get(url, headers=headers, params=params)
+    if response.status_code == 200:
+        results = response.json().get('tracks', {}).get('items', [])
+        if results:
+            track = results[0]
+            album_image = track['album']['images'][0]['url'] if track['album']['images'] else None
+            spotify_url = track['external_urls']['spotify']
+            return album_image, spotify_url
+    return None, None
+
+
+
 @app.route('/login')
 def login():
     auth_query_parameters = {
@@ -134,7 +159,25 @@ def get_top_tracks_for_artist(artist, limit=5):
         'format': 'json',
         'limit': limit
     })
-    return data.get('toptracks', {}).get('track', [])
+    tracks = data.get('toptracks', {}).get('track', [])
+    results = []
+    for track in tracks:
+        image_url = None
+        if 'image' in track and len(track['image']) > 0:
+            image_url = track['image'][-1]['#text']
+            if image_url == "":
+                image_url = None
+        print(f"Track: {track['name']}, Image URL: {image_url or 'No image available'}")
+        track_info = {
+            'name': track['name'],
+            'artist': artist,
+            'url': track.get('url', ''),
+            'image': image_url or 'https://via.placeholder.com/150'
+        }
+        results.append(track_info)
+    return results
+
+
 
 def get_track_tags(artist, track):
     data = api_call({
@@ -148,6 +191,9 @@ def get_track_tags(artist, track):
 
 @app.route('/generate', methods=['POST'])
 def generate():
+    if 'token' not in session:
+        return redirect(url_for('login'))
+
     mood_tags = request.form.getlist('tags')
     genre = request.form.get('genre')
     specific_artist = request.form.get('artist')
@@ -165,32 +211,28 @@ def generate():
     all_artists = list(added_artists)
     random.shuffle(all_artists)
 
+    spotify_token = session['token']
+
     for artist in all_artists:
         tracks = get_top_tracks_for_artist(artist, limit=random.randint(2, 10))
         for track in tracks:
             title = track['name']
             key = f"{title}::{artist}"
             if key not in all_tracks:
+                album_image, spotify_url = fetch_spotify_album_art(artist, title, spotify_token)
                 all_tracks[key] = {
                     'name': title,
                     'artist': artist,
-                    'url': track.get('url')
+                    'lastfm_url': track.get('url'),
+                    'spotify_url': spotify_url,
+                    'image': album_image
                 }
 
     final_tracks = list(all_tracks.values())
-
-    if genre:
-        genre = genre.lower()
-        filtered = []
-        for track in final_tracks:
-            tags = get_track_tags(track['artist'], track['name'])
-            if genre in tags:
-                filtered.append(track)
-        final_tracks = filtered
-
     random.shuffle(final_tracks)
 
-    return render_template('generated.html', tracks=final_tracks[:50])
+    return render_template('generated.html', tracks=final_tracks)
+
 
 
 if __name__ == '__main__':
