@@ -11,7 +11,7 @@
                 <header>
                     <div class="logo">
                         <a href="index.html" class="logo">
-                            <img src="mood.png" alt="Logo">
+                            <img src="{{ url_for('static', filename='images/mood.png') }}" alt="Logo Image" style="width: 250px; height: auto;">
                         </a>
                     </div>
                     <nav>
@@ -31,7 +31,7 @@
                 <div class="container1">
                     <div class="left-text">
                         <p>Customize your playlists according to your choice of tempo and genre.</p>
-                        <img src="books.png" class="background-image" alt="Background Image">
+                        <img src="{{ url_for('static', filename='images/books.png') }}" alt="Books Image" style="width: 250px; height: auto;">
                     </div>
             
                     <form method="GET" action="/customize" class="mood-buttons">
@@ -45,7 +45,7 @@
             
                     <div class="right-text">
                         <p>Create a playlist that matches your mood in just one click.</p>
-                        <img src="click.png" class="background-imagec" alt="Background Imagec">
+                        <img src="{{ url_for('static', filename='images/click.png') }}" alt="Click Image" style="width: 250px; height: auto;">
                     </div>
                 </div>
             
