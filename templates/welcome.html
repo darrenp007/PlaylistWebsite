@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Mood Playlist App</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Kalnia:wght@400;700&display=swap');
+
+    body {
+        font-family: 'Kalnia', serif;
+        background-color: #2c2c2c;
+    }
+
+    h1 {
+        color: beige;
+        align-content: center;
+    }
+
+    h2 {
+        color: beige;
+        align-content: center;
+    }
+  </style>
+
+</head>
+<body>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <ul class="flashes">
+        {% for category, message in messages %}
+          <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+  
+  <h1>Welcome to the Mood Playlist App</h1>
+  <h2>Log in below to get your mood based playlists</h2>
+  <a href="{{ url_for('login') }}">Log in</a>
+</body>
+</html>
