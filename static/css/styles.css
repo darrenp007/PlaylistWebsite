@@ -1,0 +1,132 @@
+@import url('https://fonts.googleapis.com/css2?family=Kalnia:wght@400;700&display=swap');
+
+body {
+    font-family: 'Kalnia', serif;
+    background-color: #2c2c2c;
+    color: beige;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+}
+
+.logo img {
+    width: 180px; 
+    height: auto;
+}
+
+nav {
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+}
+
+.nav-links {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+}
+
+.nav-links a, .auth a {
+    text-decoration: none;
+    color: beige;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.auth {
+    margin-left: auto;
+    margin-right: 30px;
+}
+
+h1 {
+    font-size: 36px;
+    font-weight: bold;
+    margin: 40px 0;
+}
+
+.container1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 60px;
+    margin: 20px auto;
+    width: 80%;
+}
+
+.left-text, .right-text {
+    width: 200px;
+    font-size: 20px;
+}
+
+.background-image {
+    position: left;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70%;
+    opacity: 0.3; 
+    z-index: -1;
+}
+
+.background-imagec {
+    position: right;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70%;
+    opacity: 0.3; 
+    z-index: -1;
+}
+
+.mood-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    font-family: 'Kalnia', serif;
+}
+
+.mood-btn {
+    width: 260px;
+    font-family: 'Kalnia', serif;
+    padding: 15px; 
+    font-size: 22px; 
+    cursor: pointer;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.happy { background-color: yellow; color: black; }
+.sad { background-color: blue; color: white; }
+.chill { background-color: green; color: white; }
+.anger { background-color: red; color: white; }
+
+.mood-btn:hover {
+    opacity: 0.8;
+}
+
+.footer a {
+    color: beige;
+    margin-top: 80px;
+    text-align: right; 
+    padding-right: 40px;
+}
+
+.footer a:visited {
+    color: beige;
+}
+
+.footer a:hover {
+    color: lightgray; 
+}
+
+.footer a:active {
+    color: white;
+}
