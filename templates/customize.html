@@ -3,24 +3,29 @@
 <head>
     <title>Customize Your Playlist</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kalnia:wght@400;700&display=swap');
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f8fafc;
+            font-family: 'Kalnia', serif;
+            background-color: #2c2c2c;
             padding: 40px;
             max-width: 700px;
             margin: auto;
         }
 
-        h1 {
-            font-size: 2em;
+        h1, h3 {
+            font-size: 25px;
+            color: beige;
             text-align: center;
         }
 
         label {
+            color: beige;
             font-weight: bold;
         }
 
         input[type="text"], select {
+            color: black;
             width: 100%;
             padding: 8px;
             margin-top: 6px;
@@ -63,10 +68,21 @@
             background-color: #16a34a;
         }
     </style>
+    
+
 </head>
 <body>
-    <h1>Customize Your "{{ mood.capitalize() }}" Playlist</h1>
     <form method="POST" action="/generate">
+        <h1 style="font-weight: normal; font-size: 2em;">
+            Customize Your 
+            "<input 
+              type="text" 
+              name="playlist_name" 
+              value="{{ mood }}" 
+              style="font-size: 1em; font-weight: bold; border: none; border-bottom: 2px solid #aaa; background: transparent; text-align: center; width: 120px; outline: none;" 
+              oninput="this.value = this.value.charAt(0).toUpperCase() + this.value.slice(1)">
+            " Playlist
+          </h1>
         <h3>Tags</h3>
         <div id="tags">
             {% for tag in tags %}
@@ -87,8 +103,10 @@
         </select>
 
         <label>Include Specific Artist</label>
-        <small style="color: #6b7280;">We'll try to include multiple songs from this artist.</small>
+        <small style="color: #bec2ca;">Includes related songs from this artist and more</small>
         <input type="text" name="artist" placeholder="e.g. The Weeknd">
+
+
         <br>
         <label>Region (optional)</label>
         <select name="region">
