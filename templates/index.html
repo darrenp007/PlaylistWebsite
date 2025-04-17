@@ -1,123 +1,63 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mood Playlist</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cinzel:wght@400;700&family=Montserrat:wght@300;700&family=Poppins:wght@400;700&family=Lobster&family=Oswald:wght@400;700&family=Lora:wght@400;700&display=swap" rel="stylesheet" />
-    <style>
-        body {
-            background-color: #252629;
-            color: white;
-            text-align: center;
-            transition: background-color 0.5s ease-in-out;
-            font-family: 'Poppins', sans-serif;
-        }
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Mood Playlist</title>
+                <link href="https://fonts.googleapis.com/css2?family=Kalnia:wght@400;700&display=swap" rel="stylesheet">
+                <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">            
+            </head>
+            <body>
+                <header>
+                    <div class="logo">
+                        <a href="index.html" class="logo">
+                            <img src="{{ url_for('static', filename='images/mood.png') }}" alt="Logo Image" style="width: 250px; height: auto;">
+                        </a>
+                    </div>
+                    <nav>
+                        <div class="nav-links">
+                            <a href="#">Recent Playlists</a>
+                            <a href="#">Customize</a>
+                            <a href="#">Presets</a>
+                        </div>
+                    </nav>
+                    <div class="auth">
+                        <a href="{{ url_for('logout') }}">LOGOUT</a>
+                    </div>
+                </header>
+            
+                <h1>WHAT'S YOUR MOOD TODAY, {{user_name}}?</h1>
+            
+                <div class="container1">
+                    <div class="left-text">
+                        <p>Customize your playlists according to your choice of tempo and genre.</p>
+                        <img src="{{ url_for('static', filename='images/books.png') }}" alt="Books Image" style="width: 250px; height: auto;">
+                    </div>
+            
+                    <form method="GET" action="/customize" class="mood-buttons">
+                        <div class="mood-buttons">
+                            <button type="submit" name="mood" value="happy" class="mood-btn happy">HAPPY</button>
+                            <button type="submit" name="mood" value="sad" class="mood-btn sad">SAD</button>
+                            <button type="submit" name="mood" value="chill" class="mood-btn chill">CHILL</button>
+                            <button type="submit" name="mood" value="angry" class="mood-btn anger">ANGER</button>
+                        </div>
+                    </form>
+            
+                    <div class="right-text">
+                        <p>Create a playlist that matches your mood in just one click.</p>
+                        <img src="{{ url_for('static', filename='images/click.png') }}" alt="Click Image" style="width: 250px; height: auto;">
+                    </div>
+                </div>
+            
+                <div id="results"></div>
+            
+                <footer>
+                    <a href="{{ url_for('about') }}">About Us</a>
+                </footer>
+            
+            </body>
+            </html></a>
+    </footer>
 
-        h1 {
-            font-size: 2rem;
-            margin-top: 50px;
-            font-family: 'Playfair Display', serif; 
-        }
-
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            padding: 20px;
-            background-color: rgba(0, 0, 0, 0.2);
-            margin-top: 30px;
-            align-items: center;
-            border-radius: 20px;
-        }
-        
-        .navbar h2 {
-            font-size: 40px;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-        
-        .navbar a {
-            color: white;
-            text-decoration: none;
-            font-size: 18px;
-            margin: 0 15px;
-            font-family: 'Montserrat', sans-serif;
-            padding: 10px 20px;
-            border-radius: 30px;
-            background-color: rgba(255, 255, 255, 0.2);
-            text-transform: uppercase;
-        }
-
-        .mood-buttons {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 30px;
-        }
-
-        .mood-button {
-            border: none;
-            padding: 20px;
-            cursor: pointer;
-            width: 220px;
-            text-align: center;
-            font-size: 30px;
-            border-radius: 30px;
-            margin: 15px 0;
-            font-weight: bold;
-            transition: background 0.3s ease;
-        }
-
-        .happy {
-            background-color: #efdb2b;
-            color: black;
-            font-family: 'Playfair Display', serif;
-        }
-
-        .sad {
-            background-color: #1a36cc;
-            color: white;
-            font-family: 'Playfair Display', serif;
-        }
-
-        .chill {
-            background-color: #0ed34b;
-            color: black;
-            font-family: 'Oswald', sans-serif;
-        }
-
-        .angry {
-            background-color: #f30f0f;
-            color: white;
-            font-family: 'Cinzel', serif;
-        }
-
-        .mood-button:hover {
-            filter: brightness(85%);
-        }
-    </style>
-</head>
-<body>
-    <div class="navbar">
-        <div>
-            <a href="#">RECENT PLAYLISTS</a>
-            <a href="#">SONG RECOMMENDATIONS</a>
-        </div>
-        <h2>MOOD PLAYLIST</h2>
-        <div>
-            <a href="#">CUSTOMIZE</a>
-            <a href="#">PRESETS</a>
-            <a href="{{ url_for('logout') }}">LOGOUT</a>
-        </div>
-    </div>
-
-    <h1>What’s your mood today, {{user_name}}?</h1>
-
-    <form method="GET" action="/customize" class="mood-buttons">
-        <button type="submit" name="mood" value="happy" class="mood-button happy">HAPPY</button>
-        <button type="submit" name="mood" value="sad" class="mood-button sad">SAD</button>
-        <button type="submit" name="mood" value="chill" class="mood-button chill">CHILL</button>
-        <button type="submit" name="mood" value="angry" class="mood-button angry">ANGRY</button>
-    </form>
 </body>
 </html>
