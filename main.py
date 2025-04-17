@@ -4,6 +4,7 @@ import os
 import random
 from dotenv import load_dotenv
 from flask import send_from_directory
+from flask import flash
 
 load_dotenv()
 
@@ -59,6 +60,9 @@ def fetch_spotify_album_art(artist_name, track_name, token):
 
 @app.route('/login')
 def login():
+    if 'token' in session:
+        return redirect(url_for('index'))
+
     auth_query_parameters = {
         "client_id": CLIENT_ID,
         "response_type": "code",
@@ -67,6 +71,7 @@ def login():
     }
     auth_url = f"{AUTH_URL}?{'&'.join([f'{key}={value}' for key, value in auth_query_parameters.items()])}"
     return redirect(auth_url)
+
 
 @app.route('/about')
 def about():
@@ -107,22 +112,20 @@ def callback():
 @app.route('/')
 def index():
     if 'token' not in session:
-        return redirect(url_for('login'))
-
+        return redirect(url_for('welcome'))
     user_name = session.get('user_name', 'Guest')
     moods = list(MOOD_TAG_MAP.keys())
     return render_template('index.html', moods=moods, user_name=user_name)
 
 @app.route('/logout')
 def logout():
-    session.pop('token', None)
     session.clear()
+    flash("You've been logged out.", "info")
+    return redirect(url_for('welcome'))
 
-    return redirect(url_for('login'))
-
-@app.route('/css/<path:filename>')
-def serve_css(filename):
-    return send_from_directory('css', filename)
+@app.route('/welcome')
+def welcome():
+    return render_template('welcome.html')
 
 @app.route('/customize', methods=['GET'])
 def customize():
