@@ -1,40 +1,167 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Mood Playlist App</title>
+  <title>Mood Playlist</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Kalnia:wght@400;700&display=swap');
-
+    @import url('https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Cofo+Sans&display=swap');
     body {
-        font-family: 'Kalnia', serif;
-        background-color: #2c2c2c;
+      font-family: 'Alfa Slab One', serif;
+      background-image: url("{{ url_for('static', filename='images/welcomebg.jpg') }}");
+      background-color: #2c2c2c;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
     }
-
+    
+    .container {
+      display: flex;
+      width: 80%;
+      max-width: 1200px;
+      min-height: 400px;
+      background-color: rgba(0, 0, 0, 0.7);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    }
+    
+    .left-side {
+      flex: 1;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    
+    .right-side {
+      flex: 1;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+    
     h1 {
-        color: beige;
-        align-content: center;
+      color: white;
+      font-size: 50px;
+      margin-bottom: 20px;
+      letter-spacing: 1px;
     }
-
+    
     h2 {
-        color: beige;
-        align-content: center;
+      font-family: 'Cofo Sans', serif;
+      color: #e6e6e6;
+      font-size: 16px;
+      font-weight: normal;
+      line-height: 1.6;
+      margin-bottom: 30px;
+    }
+    
+    .button-container {
+      margin-top: 20px;
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 15px 30px;
+      font-size: 16px; 
+      font-weight: bold;
+      text-align: center;
+      color: #000000;
+      background-color: #f1f1f1;
+      border: none;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+      width: 240px; 
+    }
+    .btn:hover {
+      background-color: #ddd;
+      cursor: pointer;
+    }
+    
+    .logo-container {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+    }
+    
+    .logo-container img {
+      height: 150px;
+      width: auto;
+    }
+    
+    ul.flashes {
+      list-style-type: none;
+      padding: 0;
+      margin: 20px 0;
+      width: 100%;
+    }
+    
+    .flashes li {
+      padding: 10px 20px;
+      margin: 10px 0;
+      border-radius: 5px;
+      font-weight: bold;
+      text-align: center;
+    }
+    
+    .info {
+      background-color: darkgray;
+      color: black;
+    }
+    
+    .success {
+      background-color: #dff0d8;
+      color: #3c763d;
+    }
+    
+    .error {
+      background-color: #f2dede;
+      color: #a94442;
+    }
+    
+    .warning {
+      background-color: #fcf8e3;
+      color: #8a6d3b;
     }
   </style>
-
 </head>
 <body>
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      <ul class="flashes">
-        {% for category, message in messages %}
-          <li class="{{ category }}">{{ message }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
-  {% endwith %}
+  <div class="logo-container">
+    <img src="{{ url_for('static', filename='images/mood.png') }}" alt="Logo">
+  </div>
   
-  <h1>Welcome to the Mood Playlist App</h1>
-  <h2>Log in below to get your mood based playlists</h2>
-  <a href="{{ url_for('login') }}">Log in</a>
+  <div class="container">
+    <div class="left-side">
+      <h1>Welcome</h1>
+      <h2>Welcome to the Mood Playlist App, where your emotions set the tone. Whether you're feeling happy, sad, chill, or fiery, we'll turn that mood into a custom 
+        playlist just for you. Log in with Spotify and start discovering music that truly matches how you feel — anytime, anywhere.</h2>
+    </div>
+    
+    <div class="right-side">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <ul class="flashes">
+            {% for category, message in messages %}
+              <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+      
+      <div class="button-container">
+        <a href="{{ url_for('login') }}" class="btn">LOG IN</a>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
