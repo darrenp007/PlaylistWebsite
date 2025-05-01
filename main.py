@@ -421,24 +421,40 @@ def save_to_spotify():
         batch = track_uris[i:i+100]
         requests.post(f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks", headers=headers, json={"uris": batch})
     cover_file = request.files.get('cover_image')
-    if cover_file and cover_file.filename.lower().endswith('.jpg'):
-        image_data = cover_file.read()
-        print("Cover image size:", len(image_data), "bytes")
-        if len(image_data) > 256000:
-            flash("Cover image is too large (max 256KB).", "warning")
-        else:
-            encoded_image = base64.b64encode(image_data).decode('utf-8')
-            image_response = requests.put(
-                f"https://api.spotify.com/v1/playlists/{playlist_id}/images",
-                headers={
-                    'Authorization': f'Bearer {token}',
-                    'Content-Type': 'image/jpeg'
-                },
-                data=encoded_image
-            )
-            print("Cover upload response:", image_response.status_code, image_response.text)
-            if image_response.status_code != 202:
-                flash("Failed to upload playlist cover image.", "warning")
+
+    from PIL import Image
+    import io
+
+    cover_file = request.files.get('cover_image')
+    if cover_file:
+        filename = cover_file.filename.lower()
+        try:
+            img = Image.open(cover_file.stream).convert("RGB")
+            buffer = io.BytesIO()
+            img.save(buffer, format="JPEG")
+            jpeg_data = buffer.getvalue()
+            print("Converted image size:", len(jpeg_data), "bytes")
+
+            if len(jpeg_data) > 256000:
+                flash("Cover image is too large (max 256KB).", "warning")
+            else:
+                encoded_image = base64.b64encode(jpeg_data).decode('utf-8')
+                image_response = requests.put(
+                    f"https://api.spotify.com/v1/playlists/{playlist_id}/images",
+                    headers={
+                        'Authorization': f'Bearer {token}',
+                        'Content-Type': 'image/jpeg'
+                    },
+                    data=encoded_image
+                )
+                print("Cover upload response:", image_response.status_code, image_response.text)
+                if image_response.status_code == 202:
+                    flash("Cover image uploaded successfully!", "success")
+                else:
+                    flash(f"Failed to upload playlist cover image: {image_response.text}", "warning")
+        except Exception as e:
+            flash(f"Image processing failed: {str(e)}", "danger")
+
     return render_template("generated.html", tracks=tracks_data, playlist_link=playlist_url, playlist_name=playlist_name)
 
 
