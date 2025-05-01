@@ -4,36 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generated Playlist</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kalnia:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <style>
         body {
             background-color: #2c2c2c;
             font-family: 'Kalnia', serif;
             padding: 20px;
-        }
-        
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 40px;
-        }
-
-        .logo {
-            width: 180px; 
-            height: auto;
+            color: beige;
         }
 
         h1 {
             text-align: center;
             font-size: 2em;
-            font-family: 'Kalnia', serif;
-            color: beige;
         }
 
         h2 {
             text-align: center;
             font-size: 20px;
-            font-family: 'Kalnia', serif;
             color: rgba(245, 245, 220, 0.725);
         }
 
@@ -48,29 +36,35 @@
             align-items: center;
             gap: 20px;
         }
+
         .track img {
             width: 100px;
             height: 100px;
             object-fit: cover;
             border-radius: 5px;
         }
+
         .track-info {
             flex: 1;
         }
+
         .track-info p {
             margin: 5px 0;
             font-size: 16px;
             color: #333;
         }
+
         .track-info a {
             margin-right: 10px;
             text-decoration: none;
             color: #1db954;
         }
+
         .form-container {
             text-align: center;
             margin: 30px 0;
         }
+
         .form-container button {
             background-color: #1db954;
             color: white;
@@ -80,42 +74,59 @@
             cursor: pointer;
             font-size: 16px;
         }
+
         .form-container button:hover {
             background-color: #17a64a;
         }
+
         .playlist-link {
             text-align: center;
             margin-top: 20px;
         }
+
         .playlist-link a {
             font-size: 20px;
             color: #1db954;
             text-decoration: none;
         }
 
+        .playlist-link a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 
 <body>
-    <h1>Your Custom Playlist</h1>
-    <h2>Custom playlist curated for you based on your selected mood!</h2>
-    
+
     <header>
         <div class="logo">
-            <a href="index.html" class="logo">
+            <a href="{{ url_for('index') }}">
                 <img src="{{ url_for('static', filename='images/mood.png') }}" alt="Logo Image" style="width: 250px; height: auto;">
             </a>
+        </div>
+        <nav>
+            <div class="nav-links">
+                <a href="{{ url_for('recent') }}">Recent Tracks</a>
+                <a href="{{ url_for('about') }}">About Us</a>
+            </div>
+        </nav>
+        <div class="auth">
+            <a href="{{ url_for('logout') }}">LOGOUT</a>
         </div>
     </header>
 
     <div class="form-container">
-        <form action="{{ url_for('save_to_spotify') }}" method="post">
+        <form action="{{ url_for('save_to_spotify') }}" method="post" enctype="multipart/form-data">
             <input type="hidden" name="tracks" value='{{ tracks | tojson | safe }}'>
             <input type="hidden" name="playlist_name" value="{{ playlist_name }}">
+            <label for="cover_image" style="color: beige;">Upload Custom Cover (optional)</label><br><br>
+            <input type="file" name="cover_image" accept="image/jpeg" style="margin-bottom: 20px;"><br>
             <button type="submit">💾 Save Playlist</button>
         </form>
-    </div>
-    
+    </div>    
+
+    <h1>Your Custom Playlist</h1>
+    <h2>Custom playlist curated for you based on your selected mood!</h2>
 
     {% if playlist_link %}
     <div class="playlist-link">
@@ -135,5 +146,6 @@
         </li>
         {% endfor %}
     </ul>
+
 </body>
 </html>
