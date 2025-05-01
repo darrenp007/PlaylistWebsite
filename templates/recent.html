@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recent Tracks</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kalnia:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 40px auto;
+            max-width: 600px;
+        }
+
+        li {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            background-color: #3a3a3a;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        li img {
+            width: 64px;
+            height: 64px;
+            margin-right: 20px;
+            border-radius: 4px;
+        }
+
+        li a {
+            color: #a0eec0;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        li a:hover {
+            text-decoration: underline;
+        }
+
+        .track-info {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+
+        .back-home {
+            display: block;
+            margin-top: 30px;
+            color: #22c55e;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .back-home:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <a href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='images/mood.png') }}" alt="Logo Image" style="width: 250px; height: auto;">
+            </a>
+        </div>
+        <nav>
+            <nav>
+                <div class="nav-links">
+                    <a href="{{ url_for('recent') }}">Recent Tracks</a>
+                    <a href="{{ url_for('about') }}">About Us</a>
+                </div>
+            </nav>            
+        </nav>
+        <div class="auth">
+            <a href="{{ url_for('logout') }}">LOGOUT</a>
+        </div>
+    </header>
+    
+
+    <h1>Your Most Recently Played Tracks</h1>
+
+    {% if tracks %}
+        <ul>
+        {% for track in tracks %}
+            <li>
+                <img src="{{ track.image }}" alt="cover">
+                <div class="track-info">
+                    <a href="{{ track.spotify_url }}" target="_blank">{{ track.name }}</a>
+                    <span style="font-size: 16px; color: #ccc;">by {{ track.artist }}</span>
+                </div>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No recent tracks found.</p>
+    {% endif %}
+
+    <a class="back-home" href="{{ url_for('index') }}">← Back to Home</a>
+
+</body>
+</html>
