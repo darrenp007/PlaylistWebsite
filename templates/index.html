@@ -10,16 +10,17 @@
             <body>
                 <header>
                     <div class="logo">
-                        <a href="index.html" class="logo">
+                        <a href="{{ url_for ('index') }}" class="logo">
                             <img src="{{ url_for('static', filename='images/mood.png') }}" alt="Logo Image" style="width: 250px; height: auto;">
                         </a>
                     </div>
                     <nav>
-                        <div class="nav-links">
-                            <a href="#">Recent Playlists</a>
-                            <a href="#">Customize</a>
-                            <a href="#">Presets</a>
-                        </div>
+                        <nav>
+                            <div class="nav-links">
+                                <a href="{{ url_for('recent') }}">Recent Tracks</a>
+                                <a href="{{ url_for('about') }}">About Us</a>
+                            </div>
+                        </nav>                        
                     </nav>
                     <div class="auth">
                         <a href="{{ url_for('logout') }}">LOGOUT</a>
@@ -47,14 +48,7 @@
                         <p>Create a playlist that matches your mood in just one click.</p>
                         <img src="{{ url_for('static', filename='images/click.png') }}" alt="Click Image" style="width: 250px; height: auto;">
                     </div>
-                </div>
-            
-                <div id="results"></div>
-            
-                <footer>
-                    <a href="{{ url_for('about') }}">About Us</a>
-                </footer>
-            
+                </div>            
             </body>
             </html></a>
     </footer>
