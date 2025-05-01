@@ -1,23 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
-		<style>
-			body {background-color: white;}
-			h1 {color: black;}
-			p {color: black;}
-		</style>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Mood Playlist</title>
+		<link href="https://fonts.googleapis.com/css2?family=Kalnia:wght@400;700&display=swap" rel="stylesheet">
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 	</head>
 	<body>
 
+		<header>
+			<div class="logo">
+				<a href="../." class="logo">
+					<img src="{{ url_for('static', filename='images/mood.png') }}" alt="Logo Image" style="width: 250px; height: auto;">
+				</a>
+			</div>
+			<nav>
+				<div class="nav-links">
+					<a href="customize">Customize</a>
+				</div>
+			</nav>
+			<div class="auth">
+				<a href="{{ url_for('logout') }}">LOGOUT</a>
+			</div>
+		</header>
 		<h1>About Mood Playlist</h1>
-		<p>We're a team of three people who believe that everyone should be able to listen to music comfortably depending on their mood.
-			Unfortunately, not many services, such as Spotify which is the focus of this website, do not offer options for searching
-			specific songs based on the listener's mood. Generally, sites like Spotify focus on playlists that are randomized or based
-			on a specific genre, which doesn't match the emotional experience that a person is having. This makes it harder for any
+		<p>We're a team of three people who believe that everyone should be able to listen to music comfortably depending on their mood.<br />
+			Unfortunately, not many services, such as Spotify which is the focus of this website, do not offer options for searching<br />
+			specific songs based on the listener's mood. Generally, sites like Spotify focus on playlists that are randomized or based<br />
+			on a specific genre, which doesn't match the emotional experience that a person is having. This makes it harder for any<br />
 			listener to find a song that is most suitable for a particular mood. </p>
 			
-		<p>That is why we have came up with a web app that allows you to narrow down a list of songs into a specific category
-			of moods. For instance, if you feel sad or depressed, you would want a song that can symphatize with you, or maybe
+		<p>That is why we have came up with a web app that allows you to narrow down a list of songs into a specific category<br />
+			of moods. For instance, if you feel sad or depressed, you would want a song that can symphatize with you, or maybe<br />
 			you want a song that expresses happiness. The Mood Playlist app can accomplish exactly that.</p>
 
 	</body>
