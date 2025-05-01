@@ -27,7 +27,7 @@ CLIENT_SECRET = os.getenv("SPOT_CLIENT_SECRET")
 REDIRECT_URI = "http://localhost:3000/callback"
 AUTH_URL = "https://accounts.spotify.com/authorize"
 TOKEN_URL = "https://accounts.spotify.com/api/token"
-SCOPE = "user-read-private user-read-email playlist-modify-private playlist-modify-public"
+SCOPE = "user-read-private user-read-email user-top-read playlist-modify-private playlist-modify-public"
 
 
 API_KEY = os.getenv('LAST_FM_ID')
@@ -35,27 +35,57 @@ BASE_URL = 'http://ws.audioscrobbler.com/2.0/'
 
 
 def fetch_spotify_album_art(artist_name, track_name, token):
-    """Search Spotify for a track and get the album art and Spotify track URL."""
-    query = f"track:{track_name} artist:{artist_name}"
-    url = f"https://api.spotify.com/v1/search"
+    search_query = f"track:{track_name} artist:{artist_name}"
+    search_url = "https://api.spotify.com/v1/search"
     headers = {
         'Authorization': f'Bearer {token}',
         'Content-Type': 'application/json'
     }
-    params = {
-        'q': query,
+    search_params = {
+        'q': search_query,
         'type': 'track',
-        'limit': 1
+        'limit': 10
     }
+    search_response = requests.get(search_url, headers=headers, params=search_params)
+    if search_response.status_code != 200:
+        return None, None
+    items = search_response.json().get('tracks', {}).get('items', [])
+    if not items:
+        return None, None
+    for item in items:
+        for artist in item['artists']:
+            if artist['name'].lower() == artist_name.lower():
+                track_id = item['id']
+                break
+        else:
+            continue
+        break
+    else:
+        track_id = items[0]['id']
+
+    track_url = f"https://api.spotify.com/v1/tracks/{track_id}"
+    track_response = requests.get(track_url, headers=headers)
+    if track_response.status_code == 200:
+        track_data = track_response.json()
+        album_images = track_data.get('album', {}).get('images', [])
+        album_image = album_images[0]['url'] if album_images else None
+        spotify_url = track_data['external_urls']['spotify']
+        return album_image, spotify_url
+
+    return None, None
+
+
+
+def get_user_top_artists(token, limit=20, time_range='medium_term'):
+    url = f"https://api.spotify.com/v1/me/top/artists"
+    headers = {'Authorization': f'Bearer {token}'}
+    params = {'limit': limit, 'time_range': time_range}
     response = requests.get(url, headers=headers, params=params)
     if response.status_code == 200:
-        results = response.json().get('tracks', {}).get('items', [])
-        if results:
-            track = results[0]
-            album_image = track['album']['images'][0]['url'] if track['album']['images'] else None
-            spotify_url = track['external_urls']['spotify']
-            return album_image, spotify_url
-    return None, None
+        data = response.json()
+        return [artist['name'] for artist in data.get('items', [])]
+    return []
+
 
 
 @app.route('/login')
@@ -207,47 +237,104 @@ def generate():
     if 'token' not in session:
         return redirect(url_for('login'))
 
+    print("Starting playlist generation...")
+
     mood_tags = request.form.getlist('tags')
     genre = request.form.get('genre')
     specific_artist = request.form.get('artist')
     playlist_name = request.form.get('playlist_name')
-    
+    limit = max(1, min(int(request.form.get('limit', 25)), 50))
+    spotify_token = session['token']
 
     all_tracks = {}
     added_artists = set()
+    track_tag_cache = {}
 
+    def tag_score(tags):
+        score = len(set(mood_tags) & set(tags))
+        if genre:
+            score += 2 if genre.lower() in tags else 0
+        return score
+
+    # 1. builds pool of artists to work off of
     if specific_artist:
-        artist_tags = get_artist_top_tags(specific_artist)
-        mood_tags = list(set(mood_tags + artist_tags))
+        print(f"Using specific artist: {specific_artist}")
         added_artists.add(specific_artist)
-        similar = get_similar_artists(specific_artist, limit=random.randint(2, 10))
-        added_artists.update(similar)
+        added_artists.update(get_similar_artists(specific_artist, limit=5))
+    else:
+        print("Using user's top Spotify artists...")
+        added_artists.update(get_user_top_artists(spotify_token, limit=15))
 
     all_artists = list(added_artists)
-    random.shuffle(all_artists)
+    if specific_artist:
+        all_artists.remove(specific_artist)
+        all_artists.insert(0, specific_artist)  # ensure specific artist is added
+    random.shuffle(all_artists[1:])  #shuffles other artists keeping specific at top
 
-    spotify_token = session['token']
 
-    for artist in all_artists:
-        tracks = get_top_tracks_for_artist(artist, limit=random.randint(2, 10))
-        for track in tracks:
-            title = track['name']
-            key = f"{title}::{artist}"
-            if key not in all_tracks:
-                album_image, spotify_url = fetch_spotify_album_art(artist, title, spotify_token)
+    # 2. multiple passes are used to fill songs to the specified limit
+    def try_fetch_tracks(min_score_threshold=1, max_tracks=limit):
+        for artist in all_artists:
+            if len(all_tracks) >= max_tracks:
+                break
+
+            print(f"Fetching for artist: {artist}")
+            top_tracks = get_top_tracks_for_artist(artist, limit=5)
+
+            for track in top_tracks:
+                title = track['name']
+                key = f"{title}::{artist}"
+                if key in all_tracks:
+                    continue
+
+                if key not in track_tag_cache:
+                    print(f"Fetching tags for: {title} by {artist}")
+                    track_tag_cache[key] = get_track_tags(artist, title)
+
+                tags = track_tag_cache[key]
+                score = tag_score(tags)
+
+                if score < min_score_threshold:
+                    continue
+
+                image, url = fetch_spotify_album_art(artist, title, spotify_token)
                 all_tracks[key] = {
                     'name': title,
                     'artist': artist,
                     'lastfm_url': track.get('url'),
-                    'spotify_url': spotify_url,
-                    'image': album_image
+                    'spotify_url': url,
+                    'image': image or 'https://via.placeholder.com/150',
+                    'score': score 
                 }
 
-    final_tracks = list(all_tracks.values())
-    random.shuffle(final_tracks)    
 
-    return render_template('generated.html', tracks=final_tracks, playlist_link=None, playlist_name=playlist_name)
-    #return render_template('generated.html', tracks=final_tracks, playlist_link=playlist_name)
+                if len(all_tracks) >= max_tracks:
+                    break
+
+    # songs with highest relevance added first
+    try_fetch_tracks(min_score_threshold=2)
+
+    # adds songs with lower relevance second
+    if len(all_tracks) < limit:
+        print("Not enough tracks found. Trying with lower threshold...")
+        try_fetch_tracks(min_score_threshold=1)
+
+    # last measure if no more songs can be found adds songs with 0 relevance
+    if len(all_tracks) < limit:
+        print("Still under limit. Trying final pass to fill...")
+        try_fetch_tracks(min_score_threshold=0)
+
+    # trims playlist to limit
+    final_tracks = list(all_tracks.values())[:limit]
+    print(f"Generated {len(final_tracks)} tracks.")
+    #sorts songs by more relevance at the top
+    final_tracks = sorted(all_tracks.values(), key=lambda x: x['score'], reverse=True)[:limit]
+
+
+    return render_template('generated.html',
+                           tracks=final_tracks,
+                           playlist_link=None,
+                           playlist_name=playlist_name)
 
 @app.route('/save_to_spotify', methods=['POST'])
 def save_to_spotify():
