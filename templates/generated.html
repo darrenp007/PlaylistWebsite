@@ -120,7 +120,7 @@
             <input type="hidden" name="tracks" value='{{ tracks | tojson | safe }}'>
             <input type="hidden" name="playlist_name" value="{{ playlist_name }}">
             <label for="cover_image" style="color: beige;">Upload Custom Cover (optional)</label><br><br>
-            <input type="file" name="cover_image" accept="image/jpeg" style="margin-bottom: 20px;"><br>
+            <input type="file" name="cover_image" accept=".jpg,.jpeg,.png,image/jpeg,image/png">
             <button type="submit">💾 Save Playlist</button>
         </form>
     </div>    
