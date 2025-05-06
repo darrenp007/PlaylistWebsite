@@ -248,7 +248,8 @@ def generate():
 
     mood_tags = request.form.getlist('tags')
     genre = request.form.get('genre')
-    specific_artist = request.form.get('artist')
+    include_artist = request.form.get('include_artist')
+    exclude_artist = request.form.get('exclude_artist')
     playlist_name = request.form.get('playlist_name')
     limit = max(1, min(int(request.form.get('limit', 25)), 50))
     spotify_token = session['token']
@@ -264,10 +265,10 @@ def generate():
         return score
 
     # 1. builds pool of artists to work off of
-    if specific_artist:
-        print(f"Using specific artist: {specific_artist}")
-        added_artists.add(specific_artist)
-        added_artists.update(get_similar_artists(specific_artist, limit=15))
+    if include_artist:
+        print(f"Using specific artist: {include_artist}")
+        added_artists.add(include_artist)
+        added_artists.update(get_similar_artists(include_artist, limit=15))
     else:
         print("Using user's top Spotify artists...")
         added_artists.update(get_user_top_artists(spotify_token, limit=15))
@@ -275,10 +276,15 @@ def generate():
     print(added_artists)
 
     all_artists = list(added_artists)
-    if specific_artist:
-        all_artists.remove(specific_artist)
-        all_artists.insert(0, specific_artist)  # ensure specific artist is added
+    if include_artist:
+        all_artists.remove(include_artist)
+        all_artists.insert(0, include_artist)  # ensure specific artist is added
     random.shuffle(all_artists[1:])  #shuffles other artists keeping specific at top
+
+    if exclude_artist in all_artists:
+        all_artists.remove(exclude_artist)
+        print(f"Removed artist: {exclude_artist}")
+
 
 
     # 2. multiple passes are used to fill songs to the specified limit
