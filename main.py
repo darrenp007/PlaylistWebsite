@@ -22,8 +22,9 @@ MOOD_TAG_MAP = {
     'angry': ['angry', 'workout', 'fast'],
 }
 
-GENRE_TAGS = ['pop', 'rock', 'hip-hop', 'electronic', 'jazz', 'metal', 'lo-fi', 'folk', 'edm', 'classical']
-REGIONS = ['global', 'united states', 'united kingdom', 'germany', 'france', 'japan', 'canada', 'australia']
+GENRE_TAGS = ['pop', 'rock', 'hip-hop', 'indie', 'alternative','r&b', 'soul', 'bedroom pop', 'electronic', 'jazz', 'metal', 'lo-fi', 'folk', 'edm', 'classical']
+REGIONS = ['global', 'united states', 'united kingdom', 'canada', 'australia', 'japan', 'south korea', 'brazil', 'nigeria', 'mexico', 'germany', 'france', 'spain', 'italy', 'sweden', 'india', 'south africa', 'philippines']
+
 CLIENT_ID = os.getenv("SPOT_CLIENT_ID")
 CLIENT_SECRET = os.getenv("SPOT_CLIENT_SECRET")
 REDIRECT_URI = "http://localhost:3000/callback"
@@ -234,6 +235,10 @@ def get_track_tags(artist, track):
     })
     return [tag['name'].lower() for tag in data.get('toptags', {}).get('tag', [])]
 
+@app.route('/finding')
+def finding():
+    return render_template("finding.html")
+
 @app.route('/generate', methods=['POST'])
 def generate():
     if 'token' not in session:
@@ -262,10 +267,12 @@ def generate():
     if specific_artist:
         print(f"Using specific artist: {specific_artist}")
         added_artists.add(specific_artist)
-        added_artists.update(get_similar_artists(specific_artist, limit=5))
+        added_artists.update(get_similar_artists(specific_artist, limit=15))
     else:
         print("Using user's top Spotify artists...")
         added_artists.update(get_user_top_artists(spotify_token, limit=15))
+
+    print(added_artists)
 
     all_artists = list(added_artists)
     if specific_artist:
@@ -282,6 +289,9 @@ def generate():
 
             print(f"Fetching for artist: {artist}")
             top_tracks = get_top_tracks_for_artist(artist, limit=5)
+
+
+                
 
             for track in top_tracks:
                 title = track['name']
