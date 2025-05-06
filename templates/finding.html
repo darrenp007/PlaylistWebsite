@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generating Playlist</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kalnia:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Kalnia', serif;
+            background-color: #2c2c2c;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #status {
+            font-size: 2em;
+            color: beige;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="status">Generating playlist...</div>
+
+    <script>
+        // used to get status element to update text
+        const status = document.getElementById('status');
+        //sends post request to generate and grabs the form data from localStorage
+        fetch('/generate', {
+            method: 'POST',
+            body: new URLSearchParams(localStorage.getItem('formData'))
+        }).then(res => res.text())
+          .then(html => {
+              document.open();
+              document.write(html);
+              document.close();
+          });
+        //messages displayed
+        const messages = ["Finding songs...", "Finishing up..."];
+        let i = 0;
+        setInterval(() => {
+            if (i < messages.length) status.textContent = messages[i++];
+        }, 4000); //4000 ms = 4 s interval
+    </script>
+</body>
+</html>
