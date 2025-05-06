@@ -72,7 +72,7 @@
 
 </head>
 <body>
-    <form method="POST" action="/generate">
+    <form id="genForm">
         <h1 style="font-weight: normal; font-size: 2em;">
             Customize Your 
             "<input 
@@ -148,5 +148,27 @@
             button.parentElement.remove();
         }
     </script>
+    <!--js for loading screen through browser-->
+    <script>
+        //form with id 'genForm' is submitted
+        document.getElementById('genForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // stops form from redirecting
+    
+            const formData = new FormData(this); // collects all the form input values
+            const params = new URLSearchParams();
+    
+            // goes through each form field and add it to params
+            for (const [key, value] of formData.entries()) {
+                params.append(key, value);
+            }
+    
+            // saves the form data to localStorage so we can use it on the next page
+            localStorage.setItem('formData', params.toString());
+    
+            // goes to the "finding" page that will use this data
+            window.location.href = "/finding";
+        });
+    </script>
+    
 </body>
 </html>
