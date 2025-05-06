@@ -68,8 +68,6 @@
             background-color: #16a34a;
         }
     </style>
-    
-
 </head>
 <body>
     <form id="genForm">
@@ -82,7 +80,8 @@
               style="font-size: 1em; font-weight: bold; border: none; border-bottom: 2px solid #aaa; background: transparent; text-align: center; width: 120px; outline: none;" 
               oninput="this.value = this.value.charAt(0).toUpperCase() + this.value.slice(1)">
             " Playlist
-          </h1>
+        </h1>
+
         <h3>Tags</h3>
         <div id="tags">
             {% for tag in tags %}
@@ -94,6 +93,7 @@
         </div>
         <button type="button" onclick="addTag()" class="btn" style="margin-bottom: 20px;">+ Add Tag</button>
         <br>
+
         <label>Genre (optional)</label>
         <select name="genre">
             <option value="">-- None --</option>
@@ -102,10 +102,18 @@
             {% endfor %}
         </select>
 
-        <label>Include Specific Artist</label>
-        <small style="color: #bec2ca;">Includes related songs from this artist and more</small>
-        <input type="text" name="artist" placeholder="e.g. The Weeknd">
-
+        <div style="display: flex; gap: 20px; margin-bottom: 16px;">
+            <div style="flex: 1;">
+                <label>Include Artist</label><br>
+                <input type="text" name="include_artist" placeholder="e.g. The Weeknd" 
+                       style="width: 100%; padding: 8px; border-radius: 5px; border: 1px solid #ccc; text-transform: capitalize;">
+            </div>
+            <div style="flex: 1;">
+                <label>Exclude Artist</label><br>
+                <input type="text" name="exclude_artist" placeholder="e.g. Drake" 
+                       style="width: 100%; padding: 8px; border-radius: 5px; border: 1px solid #ccc; text-transform: capitalize;">
+            </div>
+        </div>
 
         <br>
         <label>Region (optional)</label>
@@ -118,7 +126,6 @@
         <br>
         <label for="limit">Limit</label>
         <input type="number" name="limit" id="limit" min="1" max="50" value="25" style="width: 80px;" required>
-
 
         <button type="submit" class="btn">Generate Playlist</button>
     </form>
@@ -147,28 +154,19 @@
         function removeTag(button) {
             button.parentElement.remove();
         }
-    </script>
-    <!--js for loading screen through browser-->
-    <script>
-        //form with id 'genForm' is submitted
+
         document.getElementById('genForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // stops form from redirecting
-    
-            const formData = new FormData(this); // collects all the form input values
+            e.preventDefault();
+            const formData = new FormData(this);
             const params = new URLSearchParams();
-    
-            // goes through each form field and add it to params
+
             for (const [key, value] of formData.entries()) {
                 params.append(key, value);
             }
-    
-            // saves the form data to localStorage so we can use it on the next page
+
             localStorage.setItem('formData', params.toString());
-    
-            // goes to the "finding" page that will use this data
             window.location.href = "/finding";
         });
     </script>
-    
 </body>
 </html>
