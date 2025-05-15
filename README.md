@@ -33,16 +33,13 @@ The Mood Playlist app is pretty straightforward to set up and get started. You o
 ---
 # Technical Overview
 
-**Technology stack:** This app is built using Python, Flask, and HTML.
+- **Frontend:** HTML, CSS, and JavaScript
 
-**Spotify API Integration:** 
+- **Backend:** Python and Flask. 
 
-**Security Policies:**
-
-**Backend:**
-
----
-# To-Do List
+- **APIs:**
+  - Spotify: Playlist generation.
+  - Last.fm: Fetching song information.  
 
 ---
 Please do leave an issue under GitHub regarding bugs and feedback.
